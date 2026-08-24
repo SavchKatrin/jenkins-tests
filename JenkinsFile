@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+    }
+
+    parameters {
+        string(name: 'TEST_STUDENT_EMAIL', defaultValue: '', description: 'email')
+        password(name: 'TEST_STUDENT_PASSWORD', defaultValue: '', description: 'password')
+        string(name: 'TEST_BRANCH', defaultValue: 'main', description: 'Git Branch')
+    }
+
+    environment {
+        TEST_API_BASE_URL = 'http://127.0.0.1:8080'
+    }
+
+    stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Run tests") {
+            steps {
+                sh 'bash scripts/run_test.sh'
+            }
+        }
+    }
+
+    post {
+        always {
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'allure-results']]
+            ])
+            archiveArtifacts artifacts: 'allure-results/**', allowEmptyArchive: true
+            script {
+                currentBuild.description = env.BUILD_URL ? "Allure report: ${env.BUILD_URL}" : "Allure report"
+            }
+        }
+    }
+}
