@@ -15,4 +15,6 @@ if [ -z "${TEST_STUDENT_PASSWORD:-}" ]; then
   exit 1
 fi
 
+curl -v http://127.0.0.1:8080/auth/login || true
+
 pytest -q --alluredir=allure-results
