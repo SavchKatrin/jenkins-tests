@@ -2,6 +2,7 @@
 set -euo pipefail
 
 python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
 if [ -z "${TEST_STUDENT_EMAIL:-}" ]; then
@@ -10,7 +11,7 @@ if [ -z "${TEST_STUDENT_EMAIL:-}" ]; then
 fi
 
 if [ -z "${TEST_STUDENT_PASSWORD:-}" ]; then
-  echo "[ERROR] $TEST_STUDENT_PASSWORD is required"
+  echo "[ERROR] TEST_STUDENT_PASSWORD is required"
   exit 1
 fi
 
