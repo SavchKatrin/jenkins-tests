@@ -51,7 +51,7 @@ def access_token(base_url, student_email, student_password):
 
 @pytest.fixture(scope='session')
 def api_client(base_url, access_token):
-    with requests.Session as session:
+    with requests.Session() as session:
         session.base_url = base_url
         session.headers.update(
             {
@@ -60,7 +60,3 @@ def api_client(base_url, access_token):
             }
         )
         yield session
-
-
-
-
